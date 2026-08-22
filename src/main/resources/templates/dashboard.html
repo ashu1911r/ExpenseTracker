@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker - Dashboard</title><link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">💰 Expense Tracker</div>
+  <nav><a class="active" href="/">Dashboard</a><a href="/expenses">Expenses</a><a href="/budgets">Budgets</a></nav>
+</header>
+<main class="container">
+  <section class="hero">
+    <div><p class="eyebrow">Monthly overview</p><h1 th:text="${monthName + ' ' + selectedYear}">August 2026</h1></div>
+    <div class="actions"><a class="btn primary" href="/expenses/new">+ Add Expense</a><a class="btn" href="/budgets/new">Set Budget</a></div>
+  </section>
+
+  <form class="month-picker" method="get" action="/">
+    <label>Month <input type="month" name="monthValue" th:value="${yearMonth}" onchange="splitMonth(this.form, this.value)"></label>
+    <input type="hidden" name="year" id="year"><input type="hidden" name="month" id="month">
+    <button class="btn" type="submit">View</button>
+  </form>
+
+  <section class="cards">
+    <div class="card"><span>Total Spent</span><strong>₹ <span th:text="${spent}">0.00</span></strong></div>
+    <div class="card"><span>Monthly Budget</span><strong>₹ <span th:text="${budgetAmount}">0.00</span></strong></div>
+    <div class="card"><span>Remaining</span><strong th:classappend="${remaining.signum() < 0 ? 'danger' : 'success'}">₹ <span th:text="${remaining}">0.00</span></strong></div>
+    <div class="card"><span>Transactions</span><strong th:text="${#lists.size(expenses)}">0</strong></div>
+  </section>
+
+  <section class="grid-2">
+    <div class="panel"><div class="panel-head"><h2>Recent expenses</h2><a href="/expenses">View all</a></div>
+      <div th:if="${#lists.isEmpty(expenses)}" class="empty">No expenses for this month.</div>
+      <table th:unless="${#lists.isEmpty(expenses)}"><thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Amount</th></tr></thead>
+      <tbody><tr th:each="e : ${expenses}"><td th:text="${e.title}">Lunch</td><td><span class="tag" th:text="${e.category}">Food</span></td><td th:text="${e.expenseDate}">2026-08-22</td><td>₹ <span th:text="${e.amount}">100</span></td></tr></tbody></table>
+    </div>
+    <div class="panel"><div class="panel-head"><h2>By category</h2></div>
+      <div th:if="${#maps.isEmpty(categoryTotals)}" class="empty">Add expenses to see the breakdown.</div>
+      <div class="category-list" th:unless="${#maps.isEmpty(categoryTotals)}">
+        <div class="category-row" th:each="entry : ${categoryTotals}"><span th:text="${entry.key}">Food</span><strong>₹ <span th:text="${entry.value}">0</span></strong></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+function splitMonth(form, value){ if(!value)return; const p=value.split('-'); document.getElementById('year').value=p[0]; document.getElementById('month').value=parseInt(p[1]); form.submit(); }
+</script>
+</body></html>

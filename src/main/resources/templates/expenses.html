@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Expenses</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<header class="topbar"><div class="brand">💰 Expense Tracker</div><nav><a href="/">Dashboard</a><a class="active" href="/expenses">Expenses</a><a href="/budgets">Budgets</a></nav></header>
+<main class="container">
+<section class="hero"><div><p class="eyebrow">Transactions</p><h1>All Expenses</h1></div><a class="btn primary" href="/expenses/new">+ Add Expense</a></section>
+<div class="panel"><div th:if="${#lists.isEmpty(expenses)}" class="empty">No expenses yet. Add your first one.</div>
+<table th:unless="${#lists.isEmpty(expenses)}"><thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Amount</th><th>Actions</th></tr></thead>
+<tbody><tr th:each="e : ${expenses}"><td th:text="${e.title}">Lunch</td><td><span class="tag" th:text="${e.category}">Food</span></td><td th:text="${e.expenseDate}"></td><td>₹ <span th:text="${e.amount}"></span></td>
+<td class="actions-inline"><a class="btn small" th:href="@{/expenses/edit/{id}(id=${e.id})}">Edit</a><form th:action="@{/expenses/delete/{id}(id=${e.id})}" method="post" onsubmit="return confirm('Delete this expense?')"><button class="btn small danger-btn">Delete</button></form></td></tr></tbody></table></div>
+</main></body></html>

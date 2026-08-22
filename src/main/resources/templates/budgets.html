@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Budgets</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<header class="topbar"><div class="brand">💰 Expense Tracker</div><nav><a href="/">Dashboard</a><a href="/expenses">Expenses</a><a class="active" href="/budgets">Budgets</a></nav></header>
+<main class="container">
+<section class="hero"><div><p class="eyebrow">Planning</p><h1>Monthly Budgets</h1></div><a class="btn primary" href="/budgets/new">+ Set Budget</a></section>
+<div class="panel"><div th:if="${#lists.isEmpty(budgets)}" class="empty">No budgets yet.</div>
+<table th:unless="${#lists.isEmpty(budgets)}"><thead><tr><th>Year</th><th>Month</th><th>Budget</th><th>Actions</th></tr></thead>
+<tbody><tr th:each="b : ${budgets}"><td th:text="${b.budgetYear}"></td><td th:text="${T(java.time.Month).of(b.budgetMonth)}"></td><td>₹ <span th:text="${b.amount}"></span></td>
+<td class="actions-inline"><a class="btn small" th:href="@{/budgets/edit/{id}(id=${b.id})}">Edit</a><form th:action="@{/budgets/delete/{id}(id=${b.id})}" method="post" onsubmit="return confirm('Delete this budget?')"><button class="btn small danger-btn">Delete</button></form></td></tr></tbody></table></div>
+</main></body></html>
